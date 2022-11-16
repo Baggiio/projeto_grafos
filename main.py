@@ -1,5 +1,3 @@
-import math as m
-
 def verificar_complexo(A):
     for i in range(len(A)):
         for j in range(len(A[i])):
@@ -30,7 +28,7 @@ def exibir_complexo(A):
         if lacos:
             print("\tOcorre %d laço em v%d." % (lacos[0][0], lacos[0][1])) if len(lacos) == 1 else print("Ocorrem %d laços em v%d." % (lacos[i][0], lacos[i][1]))
     else:
-        print("O grafo não é complexo, pois não possui arestas múltiplas ou laços.")
+        print("O grafo é simples, pois não possui arestas múltiplas ou laços.")
 
 def verificar_graus(A):
     graus = []
@@ -91,19 +89,50 @@ def colorir_grafo(A, cor, posicao, v):
                 return False
         if not resp:
             return False
+    global color
+    color = cor
     return True
+
+def verificar_bipartido_completo(A, color):
+    SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+    if verificar_complexo(A) == False:
+        x = []
+        y = []
+        for i in range(len(color)):
+            if color[i] == 0:
+                x.append(i)
+            else:
+                y.append(i)
+        for i in range(len(x)):
+            for j in range(len(y)):
+                if A[x[i]][y[j]] == 0:
+                    print("\tO grafo não é bipartido completo, pois v%d não é adjacente a v%d." % (x[i]+1, y[j]+1))
+                    return
+        print("\tO grafo é bipartido completo: K%s,%s." % (str(len(x)).translate(SUB), str(len(y)).translate(SUB)))
+        return
+    else:
+        print("\tO grafo não pode ser bipartido completo pois é complexo.")
+        return
   
 def verificar_bipartido(A):
     cor = [-1] * len(A)
     posicao = 0
-    if colorir_grafo(A, cor, posicao, 1):
-        print("O grafo é bipartido.")
+    if colorir_grafo(A, cor, posicao, 0):
+        x = []
+        y = []
+        for i in range(len(color)):
+            if color[i] == 0:
+                x.append("v"+str(i+1))
+            else:
+                y.append("v"+str(i+1))
+        print("O grafo é bipartido com bipartição x = {%s} e y = {%s}." % (", ".join(x), ", ".join(y)))
+        verificar_bipartido_completo(A, color)
     else:
         print("O grafo não é bipartido.")
 
 def main():
     A = []
-    file = open("D.txt", "r");
+    file = open("G.txt", "r");
     lines = file.readlines();
     for each in lines:
         A.append(list(int(x) for x in each.strip("\n").split(" ")));
@@ -113,7 +142,7 @@ def main():
     numero_arestas(A); print()
     verificar_completo(A); print()
     verificar_regular(A); print()
-    verificar_bipartido(A)
+    verificar_bipartido(A); print()
     
 if __name__ == "__main__":
     main()
