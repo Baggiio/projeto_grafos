@@ -1,4 +1,8 @@
+# imprime as boas-vindas ao usuário
+print("Seja bem-vindo ao algoritmo de análise de grafos!")
+
 # imprime o nome e numero dos elementos do grupo
+print("Algoritmo desenvolvido por:")
 print("Gustavo Garcia Bagio - RA: 24.122.012-8")
 print("Cauan Vinicius Espinha de Sousa - RA: 24.122.089-6")
 
@@ -22,15 +26,25 @@ def colorir_grafo(A, cor, posicao, v):
 
 # realiza a leitura da matriz de adjacência do grafo e armazena em uma lista
 A = []
-file = open("G.txt", "r");
-lines = file.readlines();
-for each in lines:
-    A.append(list(int(x) for x in each.strip("\n").split(" ")));
+file = open("A.txt", "r")
+lines = file.readlines()
+try:
+    for each in lines:
+        A.append(list(int(x) for x in each.strip("\n").split(" ")))
+except:
+    print("\nMatriz inválida! Verifique se há espaços adicionais no arquivo texto.")
+    exit()
+    
 
 # imprime a matriz de adjacencia do grafo
-print("\nMatriz de adjacencia do grafo:")
-for each in A:
-    print(each)
+print("\nMatriz de adjacencia do grafo:\n")
+print("%5s" % "", end="")
+for i in range(len(A)):
+    print("%5s" % ("v" + str(i+1))) if i == (len(A)-1) else print("%5s" % ("v" + str(i+1)), end="")
+for i in range(len(A)):
+    for j in range(len(A[0])):
+        if j == 0: print("%5s" % ("v" + str(i+1)), end="")
+        print("%5d" % (A[i][j])) if j == (len(A[0])-1) else print("%5d" % (A[i][j]), end="")
 
 print()
 
@@ -57,7 +71,7 @@ if complexo == 1:
             elif i - j < 0:
                 if A[i][j] > 1:
                     arestas_multiplas.append([A[i][j], (i+1), (j+1)])
-    print("O grafo é complexo:")
+    print("O grafo é complexo, pois há arestas múltiplas ou laços:")
     if arestas_multiplas:
         for i in range(len(arestas_multiplas)):
             print("\tOcorrem %d arestas múltiplas entre v%d e v%d." % (arestas_multiplas[i][0], arestas_multiplas[i][1], arestas_multiplas[i][2]))
@@ -133,7 +147,6 @@ if colorir_grafo(A, cor, posicao, 0):
         else:
             y.append("v"+str(i+1))
     print("O grafo é bipartido com bipartição x = {%s} e y = {%s}." % (", ".join(x), ", ".join(y)))
-    SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
 
     # verifica se o grafo bipartido é bipartido completo
     if complexo == 0:
@@ -155,10 +168,15 @@ if colorir_grafo(A, cor, posicao, 0):
             else:
                 break
         if found == 0:
-            print("\tO grafo é bipartido completo: K%s,%s." % (str(len(x)).translate(SUB), str(len(y)).translate(SUB)))
+            print("\tO grafo é bipartido completo, pois cada vértice de x está associado com cada vértice de y.")
+            print("\tO grafo pode ser denotado como K%s,%s." % (str(len(x)), str(len(y))))
     else:
         print("\tO grafo não pode ser bipartido completo pois é complexo.")
 else:
-    print("O grafo não é bipartido.")
+    print("O grafo não é bipartido, pois não é possível separar seus vértices em dois subconjuntos x e y tal que toda aresta do grafo une um vértice de x a outro de y.")
 
 print()
+
+# solicita uma entrada do usuario para encerrar o programa
+print("Pressione qualquer tecla para sair...")
+input()
